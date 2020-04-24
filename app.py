@@ -3,7 +3,6 @@ from inference import predict_breed_transfer
 import os
 import io
 from PIL import Image
-from werkzeug.utils import secure_filename
 
 UPLOAD_FOLDER = './static'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -25,13 +24,12 @@ def submit_data():
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
             image = file.read()
             predicted_breed = predict_breed_transfer(image_bytes = image)
             imag = Image.open(io.BytesIO(image))
-            imag.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            imag.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
             result_dic = {
-                'im' : filename,
+                'im' : file.filename,
                 'breed' : predicted_breed
             }
             return render_template('index.html', dog=result_dic)
