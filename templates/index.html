@@ -197,6 +197,7 @@
         {% if dog %}
         <!-- <img src = "{{ dog['im'] }}" alt=""> -->
         <img src = "{{ url_for('static',filename=dog['im']) }}" alt="">
+        <!-- {{ dog['im'] }} -->
         <br>
         <h1 class="h3 mb-6 font-weight-normal">Predicted Breed: {{ dog['breed'] }}</h1>
         {% endif %}

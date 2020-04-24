@@ -1,6 +1,8 @@
 from flask import Flask, render_template, redirect, request, url_for
 from inference import predict_breed_transfer
 import os
+import io
+from PIL import Image
 from werkzeug.utils import secure_filename
 
 UPLOAD_FOLDER = './static'
@@ -26,14 +28,14 @@ def submit_data():
             filename = secure_filename(file.filename)
             image = file.read()
             predicted_breed = predict_breed_transfer(image_bytes = image)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            imag = Image.open(io.BytesIO(image))
+            imag.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             result_dic = {
                 'im' : filename,
                 'breed' : predicted_breed
             }
             return render_template('index.html', dog=result_dic)
         return render_template("index.html")
-
 
 if __name__ == '__main__':
     app.run()
