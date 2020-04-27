@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, request, url_for
-from inference import predict_breed_transfer
+from inference import predict_breed_transfer, face_detector, dog_detector
 import os
 import io
 from PIL import Image
@@ -26,14 +26,28 @@ def submit_data():
         if file and allowed_file(file.filename):
             image = file.read()
             predicted_breed = predict_breed_transfer(image_bytes = image)
-            imag = Image.open(io.BytesIO(image))
-            imag.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            if face_detector(file):
+                imag = Image.open(io.BytesIO(image))
+                imag.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+                result_dic = {
+                    'im' : file.filename,
+                    'breed' : predicted_breed
+                }
+                return render_template('index.html', human=result_dic)
+            elif dog_detector(image_bytes = image):
+                imag = Image.open(io.BytesIO(image))
+                imag.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+                result_dic = {
+                    'im' : file.filename,
+                    'breed' : predicted_breed
+                }
+                return render_template('index.html', dog=result_dic)
             result_dic = {
                 'im' : file.filename,
-                'breed' : predicted_breed
+                'result' : "We can't detect you as Human or Dog"
             }
-            return render_template('index.html', dog=result_dic)
-        return render_template("index.html")
+            return render_template('index.html', nodoghuman = result_dic)
+        return render_template('index.html', nodoghuman = result_dic)
 
 if __name__ == '__main__':
     app.run()

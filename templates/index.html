@@ -178,7 +178,7 @@
         </div>
     </nav>
 
-    {% if not dog %}
+    {% if not (dog or human or nodoghuman) %}
     <form class="form-signin" method="POST" action="/" enctype="multipart/form-data">
         <div class="text-center mb-4">
             <h1 class="h3 mb-3 font-weight-normal">Dog_Identification_App</h1>
@@ -193,13 +193,49 @@
         <button class="btn btn-lg btn-primary btn-block" type="submit">PREDICT NOW</button>
         <p class="mt-5 mb-3 text-muted text-center">Archit &copy; 2020</p>
 
-        {% else %}
+        {% elif dog %}
         <div class="container">
             <div class="col-md-4">
                 <div class="card mb-4 shadow-sm">
                     <img src="{{ url_for('static',filename=dog['im']) }}" alt="" width="100%" height="240">
                     <div class="card-body">
-                        <h1 class="h3 mb-6 font-weight-normal">Predicted Breed: {{ dog['breed'] }}</h1>
+                        <h1 class="h3 mb-6 font-weight-normal">This dog look like a {{ dog['breed'] }}</h1>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a class="btn btn-sm btn-outline-secondary" href="/"> PREDICT MORE</a>
+                            </div>
+                            <small class="text-muted">Archit &copy; 2020</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% elif human %}
+        <div class="container">
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <img src="{{ url_for('static',filename=human['im']) }}" alt="" width="100%" height="240">
+                    <div class="card-body">
+                        <h1 class="h3 mb-6 font-weight-normal">hello, human! You look like a {{ human['breed'] }}</h1>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a class="btn btn-sm btn-outline-secondary" href="/"> PREDICT MORE</a>
+                            </div>
+                            <small class="text-muted">Archit &copy; 2020</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% elif nodoghuman %}
+        <div class="container">
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <img src="{{ url_for('static',filename=nodoghuman['im']) }}" alt="" width="100%" height="240">
+                    <div class="card-body">
+                        <h1 class="h3 mb-6 font-weight-normal">{{ nodoghuman['result'] }}</h1>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
                                 <a class="btn btn-sm btn-outline-secondary" href="/"> PREDICT MORE</a>

@@ -1,8 +1,9 @@
 import json
 import numpy as np
 import torch
-
-
+import cv2                
+import torchvision.models as models
+from PIL import Image
 from commons import get_model, get_tensor
 
 
@@ -11,9 +12,25 @@ class_names = ['Affenpinscher', 'Afghan hound', 'Airedale terrier', 'Akita', 'Al
 model = get_model()
 
 def predict_breed_transfer(image_bytes):
-    image_tensor = get_tensor(image_bytes) #todo
+    image_tensor = get_tensor(image_bytes)
     output = model(image_tensor)
     # To convert output probabilities to predicted class
     _, preds_tensor = torch.max(output, 1)
     prediction = np.squeeze(preds_tensor.cpu().numpy())
     return class_names[prediction]
+
+def face_detector(img_path):
+    face_cascade = cv2.CascadeClassifier('haarcascades/haarcascade_frontalface_alt.xml')
+    img = Image.open(img_path)
+    img = np.array(img, dtype = np.uint8)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray)
+    return len(faces) > 0
+
+def dog_detector(image_bytes):
+    VGG16 = models.vgg16(pretrained=True)
+    image_tensor = get_tensor(image_bytes)
+    output = VGG16(image_tensor)
+    _, preds_tensor = torch.max(output, 1)
+    prediction = np.squeeze(preds_tensor.cpu().numpy())
+    return (prediction <= 268) & (prediction >= 151)
