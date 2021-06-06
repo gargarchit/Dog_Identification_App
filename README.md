@@ -7,9 +7,6 @@ Created a Dog Breeds Classifier App built using Convolutional Neural Networks fr
 
 
 
->This app is deployed at Heroku [Identify your dog here](https://dog-identification.herokuapp.com/)
-
-
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
